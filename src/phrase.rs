@@ -1,9 +1,8 @@
 use std::env;
+use std::fs::File;
 use std::io::Read;
-use std::{fs::File, io::BufReader};
 
-use serde::{Deserialize, Serialize};
-use serde_json::Result;
+use serde::Deserialize;
 
 use rand::prelude::*;
 
@@ -13,7 +12,7 @@ pub struct Phrase {
     pub char_ptr: usize,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 struct Words {
     content: Vec<String>,
 }
@@ -25,20 +24,24 @@ fn gen_phrase() -> String {
             json_path = format!("{}/{}", current_dir.display().to_string(), "words.json");
         }
         Err(e) => {
-            panic!("Error al obtener el directorio actual: {}", e);
+            // TODO: (faqsarg - 22/02/2024) handle this properly.
+            panic!("err obtaining current dir: {}", e);
         }
     }
+    // TODO: (faqsarg - 22/02/2024) handle this properly
     let mut json = File::open(&json_path).expect("error opening json");
     let mut json_content = String::new();
     match json.read_to_string(&mut json_content) {
-        Ok(_) => {}
-        Err(e) => panic!("err reading json"),
+        Ok(_) => {}                           // TODO: (faqsarg - 22/02/2024) is this good?
+        Err(_) => panic!("err reading json"), // TODO: (faqsarg - 22/02/2024) handle this properly
     }
+    // TODO: (faqsarg - 22/02/2024) handle this properly
     let mut w: Words = serde_json::from_str(&json_content).expect("error deserializing");
 
     let mut rng = thread_rng();
     w.content.shuffle(&mut rng);
     let mut words = String::new();
+    // TODO: (faqsarg - 22/02/2024) probably can improve this so counter is not needed
     let mut c = 0;
     for word in w.content {
         words.push_str(format!("{} ", word).as_str());

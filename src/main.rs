@@ -21,6 +21,7 @@ fn main() -> Result<(), Error> {
 
     while !should_quit {
         terminal.draw(|f| ui(f, &phrase))?;
+        // TODO: (faqsarg - 22/02/2024) handle the unwrap() for possible failure
         (is_correct, should_quit) = handle_event(&mut phrase).unwrap();
         phrase.update(is_correct);
     }
@@ -51,6 +52,8 @@ pub fn handle_event(phrase: &mut Phrase) -> Result<(Option<bool>, bool), Error> 
                         // the next char.
                         return Ok((None, false));
                     }
+                    // TODO: (faqsarg - 22/02/2024) KeyCode::Char(c) and c == cur_char
+                    // could be in the same line? try to achieve that
                     KeyCode::Char(c) => {
                         if c == cur_char {
                             return Ok((Some(true), false));

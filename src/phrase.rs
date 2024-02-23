@@ -83,4 +83,12 @@ impl Phrase {
             self.reset();
         }
     }
+
+    pub fn delete(&mut self) {
+        if self.char_ptr == 0 {
+            return;
+        }
+        self.char_ptr -= 1;
+        self.colors.pop();
+    }
 }

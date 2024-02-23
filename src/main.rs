@@ -21,7 +21,7 @@ fn main() -> Result<(), Error> {
 
     while !should_quit {
         terminal.draw(|f| ui(f, &phrase))?;
-        (is_correct, should_quit) = handle_event(&phrase).unwrap();
+        (is_correct, should_quit) = handle_event(&mut phrase).unwrap();
         phrase.update(is_correct);
     }
     disable_raw_mode()?;
@@ -35,7 +35,7 @@ fn main() -> Result<(), Error> {
 //                   Some(true) if pressed correctly.
 //                   Some(false) if pressed wrong key.
 // 2 - bool: true if wants to exit
-pub fn handle_event(phrase: &Phrase) -> Result<(Option<bool>, bool), Error> {
+pub fn handle_event(phrase: &mut Phrase) -> Result<(Option<bool>, bool), Error> {
     if event::poll(std::time::Duration::from_millis(50))? {
         if let Event::Key(k) = event::read()? {
             if k.kind == event::KeyEventKind::Press {
@@ -44,6 +44,12 @@ pub fn handle_event(phrase: &Phrase) -> Result<(Option<bool>, bool), Error> {
                 match k.code {
                     KeyCode::Esc => {
                         return Ok((Some(false), true));
+                    }
+                    KeyCode::Backspace => {
+                        phrase.delete();
+                        // return as it didn't pressed a key, so it won't color
+                        // the next char.
+                        return Ok((None, false));
                     }
                     KeyCode::Char(c) => {
                         if c == cur_char {

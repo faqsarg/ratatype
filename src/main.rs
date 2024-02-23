@@ -116,11 +116,9 @@ pub fn colored_text(phrase: &Phrase) -> Text {
             let correct = phrase.colors.get(i).unwrap();
             colored_chars.push(Span::styled(
                 phrase_char.to_string().clone(),
-                Style::new().fg(if *correct {
-                    Color::LightGreen
-                } else {
-                    Color::Red
-                }),
+                Style::new()
+                    .bg(if *correct { Color::Green } else { Color::Red })
+                    .fg(Color::White),
             ));
         } else {
             colored_chars.push(Span::styled(

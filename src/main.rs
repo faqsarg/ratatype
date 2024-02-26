@@ -46,6 +46,10 @@ pub fn handle_event(phrase: &mut Phrase) -> Result<(Option<bool>, bool), Error> 
                     KeyCode::Esc => {
                         return Ok((Some(false), true));
                     }
+                    KeyCode::F(3) => {
+                        phrase.wanna_config = !phrase.wanna_config;
+                        return Ok((None, false));
+                    }
                     KeyCode::Backspace => {
                         phrase.delete();
                         // return as it didn't pressed a key, so it won't color
@@ -71,6 +75,44 @@ pub fn handle_event(phrase: &mut Phrase) -> Result<(Option<bool>, bool), Error> 
 }
 
 pub fn ui(frame: &mut Frame, phrase: &Phrase) {
+    if phrase.wanna_config {
+        let config_layout = Layout::new(
+            Direction::Vertical,
+            [
+                Constraint::Length(1),
+                Constraint::Length(1),
+                Constraint::Length(1),
+            ],
+        )
+        .flex(Flex::Center)
+        .split(frame.size());
+
+        frame.render_widget(
+            Block::new()
+                .borders(Borders::TOP)
+                .title("test1")
+                .title_alignment(Alignment::Center),
+            config_layout[0],
+        );
+        frame.render_widget(
+            Block::new()
+                .borders(Borders::TOP)
+                .title("test2")
+                .title_alignment(Alignment::Center),
+            config_layout[1],
+        );
+        frame.render_widget(
+            Block::new()
+                .borders(Borders::TOP)
+                .title("test3")
+                .title_alignment(Alignment::Center),
+            config_layout[2],
+        );
+
+        return;
+    }
+
+    // previous condition exits the func, thats why there is no 'else' clause
     let main_layout = Layout::new(
         Direction::Vertical,
         [Constraint::Length(1), Constraint::Percentage(10)],

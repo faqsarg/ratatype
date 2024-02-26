@@ -10,6 +10,7 @@ pub struct Phrase {
     pub queue: (String, String),
     pub colors: Vec<bool>,
     pub char_ptr: usize,
+    pub wanna_config: bool,
 }
 
 #[derive(Deserialize)]
@@ -59,6 +60,7 @@ impl Phrase {
             queue: (String::from(gen_phrase()), String::from(gen_phrase())),
             colors: Vec::new(),
             char_ptr: 0,
+            wanna_config: false,
         };
         p
     }
@@ -76,6 +78,10 @@ impl Phrase {
     }
 
     pub fn update(&mut self, correct: Option<bool>) {
+        if self.wanna_config {
+            return;
+        }
+
         if let Some(v) = correct {
             self.colors.push(v);
             self.char_ptr += 1;
